@@ -2,13 +2,14 @@
     import jwt from "jsonwebtoken"
     import {JWT_SECRET} from "@repo/backend-common/config"
     import { middlware } from "./middlware";
+    import {createUserSchama} from "@repo/common/types"
 
     const app = express();
     const port  = 3001;
 
 
     app.post("/signup",()=>{
-
+        const data  = createUserSchama;
     })
 
     app.post("/signin",(req,res)=>{
@@ -30,6 +31,6 @@
     })
 
     app.listen(port,()=>{
-        console.log(`server si listening on Portj ${port}`);
+        console.log(`server is listening on Port ${port}`);
     
     })
