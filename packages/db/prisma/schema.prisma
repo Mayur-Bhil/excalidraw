@@ -17,6 +17,7 @@ model User{
   photo_url String?
   rooms Room[]
   chats Chat[]
+  createAt DateTime @default(now())
 }
 
 model Room{
