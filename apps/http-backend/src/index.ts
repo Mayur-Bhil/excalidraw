@@ -1,14 +1,20 @@
     import  express from "express";
     import jwt from "jsonwebtoken"
     import {JWT_SECRET} from "@repo/backend-common/config"
-    import { middlware } from "./middlware";
-    import {CreateRoomSchama, createUserSchema} from "@repo/common/types"
+    import { middleware } from "./middlware";
+    import {CreateRoomSchama, createUserSchema, signInSchema} from "@repo/common/types"
     import { prismaClient } from "@repo/db/client";
     import bcrypt from "bcrypt"
 
     const app = express();
     const port  = 3001;
     app.use(express.json())
+
+app.get("/helth",(req,res)=>{
+    res.json({
+        Message : "Server is Up and Running 😄"
+    })
+})
 
 app.post("/signup", async (req, res) => {
   try {
@@ -19,7 +25,7 @@ app.post("/signup", async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid inputs",
-        errors: parsedData.error
+        errors: parsedData.error.message
       });
     }
 
@@ -88,19 +94,82 @@ app.post("/signup", async (req, res) => {
     });
   }
 });
-    app.post("/signin",(req,res)=>{
-        const userId = 1;
 
-        const  token = jwt.sign({   
-            userId
-        },JWT_SECRET)
+app.post("/signin", async (req, res) => {
+  try {
+    // 1. Validate input
+    const parsedData = signInSchema.safeParse(req.body);
+    
+    if (!parsedData.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid inputs",
+        errors: parsedData.error.message
+      });
+    }
 
-        res.json({
+    const { email, password } = parsedData.data;
 
-        })
-    })
+    // 2. Find user by email
+    const user = await prismaClient.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
 
-    app.post("/room",middlware,(req,res)=>{
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      }); 
+    }
+
+    // 3. Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    // 4. Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: user.id,
+        email: user.email 
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" } // Token expires in 7 days
+    );
+
+    // 5. Send success response
+    return res.status(200).json({
+      success: true,
+      message: "Signin successful",
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
+      },
+    });
+
+  } catch (error: any) {
+    console.error("Signin error:", error);
+
+    // Generic error
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+    app.post("/room",middleware,(req,res)=>{
         const data = CreateRoomSchama.safeParse(req.body);
 
         if(!data.success){
@@ -115,6 +184,6 @@ app.post("/signup", async (req, res) => {
     })
 
     app.listen(port,()=>{
-        console.log(`server is listening on Port ${port}`);
+        console.log(`server is listening on http://localhost:${port} `);
     
     })
