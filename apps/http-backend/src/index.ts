@@ -169,19 +169,46 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-    app.post("/room",middleware,(req,res)=>{
-        const data = CreateRoomSchama.safeParse(req.body);
+app.post("/room", middleware, async(req, res) => {
+  const parsedData = CreateRoomSchama.safeParse(req.body);
 
-        if(!data.success){
-            res.json({
-                message :"Incorrect inputs"
-            })
-            return ;
-        }
-        res.json({
-            roomId:132
-        })
-    })
+  if(!parsedData.success){
+    return res.status(400).json({
+      message: "Incorrect inputs",
+      errors: parsedData.error.message
+    });
+  }
+
+  const userId = req.userId as string; // Assert it's a string
+  
+  // Or add a check:
+  if (!userId) {
+    return res.status(401).json({
+      message: "Unauthorized - User ID missing"
+    });
+  }
+  
+  try {
+    const room = await prismaClient.room.create({
+      data: {
+        slug: parsedData.data.name,
+        adminId: userId
+      }
+    });
+    
+    return res.status(201).json({
+      success: true,
+      roomId: room.id
+    });
+  } catch (error: any) {
+    console.error("Room creation error:", error);
+
+    return res.status(411).json({
+      success: false,
+      message: "Room with this name already exists"
+    });
+  }
+});
 
     app.listen(port,()=>{
         console.log(`server is listening on http://localhost:${port} `);

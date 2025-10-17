@@ -1,4 +1,4 @@
-import { email, z } from "zod"
+import { z } from "zod"
 
 export const createUserSchema = z.object({
     name:z.string().min(2,"name should Be at least 2 characters"),
@@ -13,5 +13,5 @@ export const signInSchema = z.object({
 })
 
 export const CreateRoomSchama = z.object({
-    name:z.string().min(4).max(6)
+    name:z.string().min(4).max(20)
 })
