@@ -175,7 +175,7 @@ app.post("/room", middleware, async(req, res) => {
   if(!parsedData.success){
     return res.status(400).json({
       message: "Incorrect inputs",
-      errors: parsedData.error.message
+      errors: parsedData.error.message  
     });
   }
 
