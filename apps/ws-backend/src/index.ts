@@ -12,8 +12,7 @@ interface User {
   userId: string; // Unique user identifier
 }
 
-// Store all connected users (initially empty array)
-// FIXED: Start with empty array, don't initialize with invalid data
+
 const users: User[] = [];
 
 /**
