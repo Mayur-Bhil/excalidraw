@@ -128,9 +128,6 @@ importers:
 
   packages/backend-common:
     devDependencies:
-      '@repo/backend-common':
-        specifier: workspace:*
-        version: 'link:'
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -144,9 +141,6 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11
     devDependencies:
-      '@repo/common':
-        specifier: workspace:*
-        version: 'link:'
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

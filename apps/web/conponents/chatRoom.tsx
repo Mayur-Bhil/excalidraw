@@ -1,5 +1,6 @@
 import axios from "axios"
 import { BACKEND_URL } from "../app/config"
+import { ChatRoomClient } from "./ChatRoomClient"
 
 
 async function getchats(roomId:string){
@@ -10,4 +11,7 @@ export async function ChatRoom({id}:{
     id:string
 }){
     const messages = await getchats(id);
+
+
+    return <ChatRoomClient id={id} messages={messages}></ChatRoomClient>
 }   
