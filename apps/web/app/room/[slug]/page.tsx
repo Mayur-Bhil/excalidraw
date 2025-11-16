@@ -1,25 +1,14 @@
-import axios from "axios";
-import { BACKEND_URL } from "../../config";
-import { ChatRoom } from "../../../conponents/chatRoom";
+import { ChatRoom } from "../../../components/chatRoom";
 
-
- async function getRoomId(slug:string) {
-    const responce = await axios.get(`${BACKEND_URL}/room/${slug}`);
-    return responce.data.id;
+// This is now a client component wrapper
+export default function ChatRoomPage({
+  params
+}: {
+  params: {
+    slug: string
+  }
+}) {
+  return <ChatRoom slug={params.slug} />;
 }
 
-
-export default async function ChatRoom11({
-    params
-}:{
-    params:{
-        slug:string
-    }
-}){
-    const parsedparams = (await params)
-     const slug = parsedparams.slug;
-    const roomId = await getRoomId(slug);
-
-
-    return <ChatRoom id={roomId}></ChatRoom>
-}
+// ============= components/chatRoom.tsx (FIXED) =============
