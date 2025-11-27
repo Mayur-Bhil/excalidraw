@@ -89,4 +89,3 @@ export function ChatRoomClient({
   );
 }
 
-// ============= app/page.tsx (Home) =============
