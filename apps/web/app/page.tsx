@@ -210,12 +210,12 @@ export default function Page() {
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-600 mb-6 font-medium">Trusted by creative teams at</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-60">
-            <span className="text-2xl font-bold text-gray-400">Company 1</span>
-            <span className="text-2xl font-bold text-gray-400">Company 2</span>
-            <span className="text-2xl font-bold text-gray-400">Company 3</span>
-            <span className="text-2xl font-bold text-gray-400">Company 4</span>
+            <span className="text-2xl font-bold text-gray-400">Mictosoft</span>
+            <span className="text-2xl font-bold text-gray-400">AWS</span>
+            <span className="text-2xl font-bold text-gray-400">Maven</span>
+            <span className="text-2xl font-bold text-gray-400">Google</span>
           </div>
-        </div>
+        </div>  
       </section>
 
       {/* Features Section */}
