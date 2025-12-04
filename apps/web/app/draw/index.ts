@@ -1,3 +1,7 @@
+import { HTTP_BACKEND } from "@/config";
+import axios from "axios";
+import { json } from "stream/consumers";
+
 type Shape = {
     type: "rect",
     x: number,
@@ -12,12 +16,21 @@ type Shape = {
     height: number
 };
 
-export default function initDraw(canvas:HTMLCanvasElement){
+export async function initDraw(canvas:HTMLCanvasElement,roomId:string,soket:WebSocket){
     const ctx = canvas.getContext("2d");
     
-    let existingShape: Shape[] = [];
+    let existingShape: Shape[] = await getExistingShapes(roomId);
     if(!ctx) return;
 
+
+    soket.onmessage = (event)=>{
+        const parsedData = JSON.parse(event.data);
+        if(parsedData.type === "chat"){
+            setChats(e=> [...e],{messages:parsedData.messages})
+        }
+    }
+
+    clearCanvas(existingShape,canvas,ctx);
     ctx.fillStyle = "rgba(0,0,0)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -68,4 +81,16 @@ function clearCanvas(existingShape:Shape[],canvas:HTMLCanvasElement,ctx:CanvasRe
             ctx.strokeRect(shape.x,shape.y,shape.width,shape.height);
         }
     });
+}
+
+async function getExistingShapes(roomId:string){
+    const res =  await axios.get(`${HTTP_BACKEND}/chats/${roomId}`);
+    const messages  = res.data.messages;
+
+    const shapes = messages.map((x:{messages:string})=>{
+    const messagesData = JSON.parse(x.messages);
+    return messagesData;
+
+  })
+return shapes;
 }
